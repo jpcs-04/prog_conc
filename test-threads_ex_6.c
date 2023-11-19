@@ -5,32 +5,40 @@
 
 void *thread_function(void *arg)
 {
+    int random_number = *(int *)arg;
+    
     int n = 0;
-    long int r = random() % 100;
-    printf("Start Thread %lu\n", r);
+
+    printf("Start Thread %u \n", random_number);
     while (n < 10)
     {
-        sleep(1);
+        sleep(4);
         n++;
-        printf("inside Thread %lu %d\n", r, n);
+        printf("inside Thread %u %d\n", random_number, n);
     }
-    printf("End Thread %lu\n", r);
-    return (void *)r;
+    printf("End Thread %u\n", random_number);
+    return (void *)random_number;
+
 }
 
 int main()
 {
     char line[100];
-    int n_threads;
-    printf("How many threads: ");
+    int n_threads = 0;
+
+    printf("How many threads:");
     fgets(line, 100, stdin);
     sscanf(line, "%d", &n_threads);
+
     pthread_t thread_id[n_threads];
 
     long int i = 0;
     while (i < n_threads)
     {
-        pthread_create(&thread_id[i], NULL, thread_function, NULL);
+        int *random_number_ptr = (int *)malloc(sizeof(int));
+        *random_number_ptr = random() % 6;
+
+        pthread_create(&thread_id[i], NULL, thread_function, random_number_ptr);
         i++;
     };
 
@@ -39,6 +47,7 @@ int main()
     while (i < n_threads)
     {
         pthread_join(thread_id[i], NULL);
+
         i++;
     };
 

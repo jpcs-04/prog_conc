@@ -5,9 +5,9 @@
 
 void *thread_function(void *arg)
 {
-    int n = 0;
     long int r = random() % 100;
-    printf("Start Thread %lu\n", r);
+    int n = 0;
+    printf("Start Thread %lu \n", r);
     while (n < 10)
     {
         sleep(1);
@@ -22,9 +22,12 @@ int main()
 {
     char line[100];
     int n_threads;
-    printf("How many threads: ");
+    void *thread_ret;
+
+    printf("How many threads:");
     fgets(line, 100, stdin);
     sscanf(line, "%d", &n_threads);
+
     pthread_t thread_id[n_threads];
 
     long int i = 0;
@@ -38,7 +41,8 @@ int main()
 
     while (i < n_threads)
     {
-        pthread_join(thread_id[i], NULL);
+        pthread_join(thread_id[i], &thread_ret);
+        printf("thread %lu returned value is: %ld\n", thread_id[i], (long int)thread_ret);
         i++;
     };
 
